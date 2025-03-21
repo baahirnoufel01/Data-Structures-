@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+struct LinkedList {
+    struct Node* head;
+};
+
+struct Node* create_node(int data) {
+    struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
+    new_node->data = data;
+    new_node->next = NULL;
+    return new_node;
+}
+
+void init_list(struct LinkedList* list) {
+    list->head = NULL;
+}
+
+void append(struct LinkedList* list, int data) {
+    struct Node* new_node = create_node(data);
+    if (list->head == NULL) {
+        list->head = new_node;
+    } else {
+        struct Node* current = list->head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = new_node;
+    }
+}
+
+void delete_last(struct LinkedList* list) {
+    if (list->head == NULL) {
+        printf("The list is empty.\n");
+        return;
+    }
+    if (list->head->next == NULL) {
+        free(list->head);
+        list->head = NULL;
+        return;
+    }
+    struct Node* current = list->head;
+    while (current->next != NULL && current->next->next != NULL) {
+        current = current->next;
+    }
+    free(current->next);
+    current->next = NULL;
+}
+
+void display(struct LinkedList* list) {
+    struct Node* current = list->head;
+    while (current != NULL) {
+        printf("%d -> ", current->data);
+        current = current->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    struct LinkedList list;
+    init_list(&list);
+    append(&list, 10);
+    append(&list, 20);
+    append(&list, 30);
+    printf("Before deletion:\n");
+    display(&list);
+    delete_last(&list);
+    printf("After deletion:\n");
+    display(&list);
+    return 0;
+}
